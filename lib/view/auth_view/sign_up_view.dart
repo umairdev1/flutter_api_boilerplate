@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_api_boilerplate/resources/components/round_button.dart';
+import 'package:flutter_api_boilerplate/utils/general_utils.dart';
+import 'package:flutter_api_boilerplate/utils/routes/routes_name.dart';
+import 'package:flutter_api_boilerplate/viewModel/auth_view_model.dart';
+import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+
+class SignUpView extends StatefulWidget {
+  const SignUpView({super.key});
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  ValueNotifier<bool> securepass = ValueNotifier<bool>(true);
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authviewModel = Provider.of<AuthViewModel>(context);
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: emailFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'Email',
+                    prefixIcon: Icon(Icons.alternate_email),
+                  ),
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(
+                        context, emailFocusNode, passwordFocusNode);
+                  },
+                ),
+                20.height,
+                ValueListenableBuilder(
+                  valueListenable: securepass,
+                  builder: (context, value, child) {
+                    return TextFormField(
+                      obscureText: value,
+                      controller: passwordController,
+                      focusNode: passwordFocusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        hintText: 'Password',
+                        prefixIcon: Icon(Icons.lock_rounded),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              securepass.value = !securepass.value;
+                            },
+                            icon: Icon(value
+                                ? Icons.visibility
+                                : Icons.visibility_off)),
+                      ),
+                    );
+                  },
+                ),
+                30.height,
+                RoundButton(
+                  loading: authviewModel.signuploading,
+                  onPress: () {
+                    if (emailController.text.isEmpty) {
+                      Utils.flushBarErrorMessage('Please enter email', context);
+                    } else if (passwordController.text.isEmpty) {
+                      Utils.flushBarErrorMessage(
+                          'Please enter password', context);
+                    } else if (passwordController.text.length < 6) {
+                      Utils.flushBarErrorMessage(
+                          'Please enter 6 digit password', context);
+                    } else {
+                      Map data = {
+                        "email": emailController.text.trim(),
+                        "password": passwordController.text.trim(),
+                      };
+                      authviewModel.signupApi(data, context);
+                    }
+                  },
+                  title: 'Sign Up',
+                ),
+                30.height,
+                TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, RoutesName.login);
+                    },
+                    child: Text("Already have an account? Sign In"))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
