@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_api_boilerplate/models/user_model.dart';
-import 'package:flutter_api_boilerplate/viewModel/user_view_model.dart';
+import 'package:flutter_api_boilerplate/models/auth_model.dart';
+import 'package:flutter_api_boilerplate/viewModel/local_view_model.dart';
 import 'package:provider/provider.dart';
 
 import '../repository/auth_repository.dart';
@@ -28,7 +28,8 @@ class AuthViewModel with ChangeNotifier {
     setLoading(true);
     _myRepo.loginApi(data).then((value) {
       setLoading(false);
-      final userPreference = Provider.of<UserViewModel>(context, listen: false);
+      final userPreference =
+          Provider.of<LocalViewModel>(context, listen: false);
 
       userPreference.saveUser(UserModel(token: value['token'].toString()));
 

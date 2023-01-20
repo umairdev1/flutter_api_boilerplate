@@ -63,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock_rounded),
+                        prefixIcon: const Icon(Icons.lock_rounded),
                         suffixIcon: IconButton(
                             onPressed: () {
                               securepass.value = !securepass.value;
@@ -102,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
                     onPressed: () {
                       Navigator.pushNamed(context, RoutesName.signup);
                     },
-                    child: Text("Don't have an account? Sign Up"))
+                    child: const Text("Don't have an account? Sign Up"))
               ],
             ),
           ),

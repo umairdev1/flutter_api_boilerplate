@@ -4,7 +4,7 @@ import 'package:flutter_api_boilerplate/data/network/network_api_services.dart';
 import '../resources/components/app_urls.dart';
 
 class AuthRepository {
-  BaseApiServices _apiServices = NetworkApiService();
+  final BaseApiServices _apiServices = NetworkApiService();
 
   Future<dynamic> loginApi(dynamic data) async {
     try {

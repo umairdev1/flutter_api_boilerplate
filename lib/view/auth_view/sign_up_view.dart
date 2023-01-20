@@ -62,7 +62,7 @@ class _SignUpViewState extends State<SignUpView> {
                       decoration: InputDecoration(
                         labelText: 'Password',
                         hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock_rounded),
+                        prefixIcon: const Icon(Icons.lock_rounded),
                         suffixIcon: IconButton(
                             onPressed: () {
                               securepass.value = !securepass.value;
@@ -101,7 +101,7 @@ class _SignUpViewState extends State<SignUpView> {
                     onPressed: () {
                       Navigator.pushNamed(context, RoutesName.login);
                     },
-                    child: Text("Already have an account? Sign In"))
+                    child: const Text("Already have an account? Sign In"))
               ],
             ),
           ),

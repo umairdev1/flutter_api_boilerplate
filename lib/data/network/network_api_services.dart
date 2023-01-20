@@ -38,9 +38,46 @@ class NetworkApiService extends BaseApiServices {
     return responseJson;
   }
 
+  @override
+  Future getDeleteApiResponse(String url) async {
+    dynamic responseJson;
+    try {
+      Response response = await delete(
+        Uri.parse(url),
+      ).timeout(const Duration(seconds: 10));
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataExceptions('No Internet Connection');
+    }
+
+    return responseJson;
+  }
+
+  @override
+  Future getPatchApiResponse(String url, data) async {
+    dynamic responseJson;
+    try {
+      Response response = await patch(
+        Uri.parse(url),
+        body: data,
+      ).timeout(const Duration(seconds: 10));
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataExceptions('No Internet Connection');
+    }
+
+    return responseJson;
+  }
+
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
+        dynamic responseJson = jsonDecode(response.body);
+        return responseJson;
+      case 201:
+        dynamic responseJson = jsonDecode(response.body);
+        return responseJson;
+      case 204:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 400:
@@ -49,8 +86,9 @@ class NetworkApiService extends BaseApiServices {
         throw UnauthorizedExceptions(response.body.toString());
       default:
         throw FetchDataExceptions(
-            'Error Occured while communicating with server' +
-                "with status code" +
+            // ignore: prefer_interpolation_to_compose_strings
+            'Error Occured while communicating with server '
+                    "with status code" +
                 response.statusCode.toString());
     }
   }

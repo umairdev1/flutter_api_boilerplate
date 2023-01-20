@@ -5,5 +5,8 @@ class AppUrl {
 
   static var loginUrl = '$baseUrl/api/login';
   static var registeredUrl = '$baseUrl/api/register';
-  static var moviesListEndPoint = '${moviesBaseUrl}movies_list';
+  static var userList = '$baseUrl/api/users?page=2';
+  static var userAddUrl = '$baseUrl/api/users';
+  static var userDeleteUrl = '$baseUrl/api/users/';
+  static var userUpdateUrl = '$baseUrl/api/users/';
 }

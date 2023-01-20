@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_boilerplate/view/user_view.dart';
 
 import '../../view/auth_view/login_view.dart';
 import '../../view/auth_view/sign_up_view.dart';
-import '../../view/home_screen.dart';
+
 import '../../view/splash/splash_view.dart';
 import 'routes_name.dart';
 
@@ -10,7 +11,7 @@ class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutesName.home:
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
+        return MaterialPageRoute(builder: (context) => const UserScreen());
       case RoutesName.login:
         return MaterialPageRoute(builder: (context) => const LoginView());
       case RoutesName.signup:
