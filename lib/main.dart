@@ -12,7 +12,7 @@ import 'utils/routes/routes.dart';
 final box = GetStorage();
 void main() async {
   await GetStorage.init();
-  box.erase();
+  // box.erase();
   runApp(const MyApp());
 }
 
