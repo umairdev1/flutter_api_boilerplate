@@ -31,7 +31,8 @@ class AuthViewModel with ChangeNotifier {
       final userPreference =
           Provider.of<LocalViewModel>(context, listen: false);
 
-      userPreference.saveUser(UserModel(token: value['token'].toString()));
+      userPreference
+          .saveUser(UserModel(token: value['data']['token'].toString()));
 
       Utils.flushBarErrorMessage("Login Successfully", context);
 
@@ -40,13 +41,13 @@ class AuthViewModel with ChangeNotifier {
       if (kDebugMode) {
         print(value.toString());
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       setLoading(false);
       if (kDebugMode) {
         print(error.toString());
       }
 
-      Utils.flushBarErrorMessage(error.toString(), context);
+      Utils.flushBarErrorMessage(error['data'].toString(), context);
     });
   }
 
@@ -57,16 +58,15 @@ class AuthViewModel with ChangeNotifier {
       Utils.flushBarErrorMessage("Sign Up Successfully", context);
 
       Navigator.pushNamedAndRemoveUntil(
-          context, RoutesName.home, (route) => false);
+          context, RoutesName.login, (route) => false);
       if (kDebugMode) {
         print(value.toString());
       }
-    }).onError((error, stackTrace) {
+    }).catchError((error, stackTrace) {
       setsignupLoading(false);
       if (kDebugMode) {
         print(error.toString());
       }
-
       Utils.flushBarErrorMessage(error.toString(), context);
     });
   }

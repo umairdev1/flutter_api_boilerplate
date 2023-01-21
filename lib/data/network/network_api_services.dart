@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_api_boilerplate/main.dart';
 import 'package:http/http.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import '../app_exceptions.dart';
 import 'base_api_services.dart';
@@ -13,8 +15,9 @@ class NetworkApiService extends BaseApiServices {
   Future getGetApiResponse(String url) async {
     dynamic responseJson;
     try {
-      final response =
-          await http.get(Uri.parse(url)).timeout(const Duration(seconds: 10));
+      final response = await http.get(Uri.parse(url), headers: {
+        'Authorization': 'Bearer ${box.read('token')}',
+      }).timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataExceptions('No Internet Connection');
@@ -28,6 +31,9 @@ class NetworkApiService extends BaseApiServices {
     try {
       Response response = await post(
         Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${box.read('token')}',
+        },
         body: data,
       ).timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
@@ -39,12 +45,42 @@ class NetworkApiService extends BaseApiServices {
   }
 
   @override
+  Future getPostWithImageApiResponse(
+      String url, String imageFieldName, File image, Map data) async {
+    dynamic responseJson;
+    try {
+      var request = MultipartRequest(
+        'POST',
+        Uri.parse(url),
+      );
+      request.headers.addAll({
+        "Content-Type": "multipart/form-data",
+        'Authorization': 'Bearer ${box.read('token')}',
+      });
+      request.files.add(http.MultipartFile(
+          imageFieldName, image.readAsBytes().asStream(), image.lengthSync(),
+          filename: image.path.split("/").last));
+
+      request.fields.addAll(Map<String, String>.from(data));
+
+      var response = await request.send();
+      print(response);
+      responseJson = returnResponse(
+          Response(await response.stream.bytesToString(), response.statusCode));
+    } on SocketException {
+      throw FetchDataExceptions('No Internet Connection');
+    }
+
+    return responseJson;
+  }
+
+  @override
   Future getDeleteApiResponse(String url) async {
     dynamic responseJson;
     try {
-      Response response = await delete(
-        Uri.parse(url),
-      ).timeout(const Duration(seconds: 10));
+      Response response = await delete(Uri.parse(url), headers: {
+        'Authorization': 'Bearer ${box.read('token')}',
+      }).timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataExceptions('No Internet Connection');
@@ -59,6 +95,9 @@ class NetworkApiService extends BaseApiServices {
     try {
       Response response = await patch(
         Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer ${box.read('token')}',
+        },
         body: data,
       ).timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
@@ -81,15 +120,20 @@ class NetworkApiService extends BaseApiServices {
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 400:
-        throw BadRequestExceptions(response.body.toString());
+        dynamic responseJson = jsonDecode(response.body);
+        throw responseJson;
       case 404:
-        throw UnauthorizedExceptions(response.body.toString());
+        dynamic responseJson = jsonDecode(response.body);
+        throw responseJson;
+      case 401:
+        dynamic responseJson = jsonDecode(response.body);
+        throw responseJson;
+      case 409:
+        dynamic responseJson = jsonDecode(response.body);
+        throw responseJson['data'];
       default:
-        throw FetchDataExceptions(
-            // ignore: prefer_interpolation_to_compose_strings
-            'Error Occured while communicating with server '
-                    "with status code" +
-                response.statusCode.toString());
+        dynamic responseJson = jsonDecode(response.body);
+        throw responseJson;
     }
   }
 }

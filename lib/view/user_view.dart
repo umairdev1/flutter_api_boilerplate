@@ -3,7 +3,7 @@ import 'package:flutter_api_boilerplate/data/response/status.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
-import '../viewModel/user_view_model.dart';
+import '../viewModel/product_view_model.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -13,7 +13,7 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  UserListViewModel userViewModel = UserListViewModel();
+  ProductViewModel userViewModel = ProductViewModel();
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _UserScreenState extends State<UserScreen> {
       body: ChangeNotifierProvider(
         create: (BuildContext context) => userViewModel,
         builder: (context, child) {
-          return Consumer<UserListViewModel>(
+          return Consumer<ProductViewModel>(
             builder: (context, value, _) {
               switch (value.userList.status) {
                 case Status.LOADING:

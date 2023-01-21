@@ -18,13 +18,22 @@ class _SignUpViewState extends State<SignUpView> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController userController = TextEditingController();
+  TextEditingController firstController = TextEditingController();
+  TextEditingController lastController = TextEditingController();
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passwordFocusNode = FocusNode();
+  FocusNode userFocusNode = FocusNode();
+  FocusNode firstFocusNode = FocusNode();
+  FocusNode lastFocusNode = FocusNode();
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    userController.dispose();
+    firstController.dispose();
+    lastController.dispose();
     super.dispose();
   }
 
@@ -37,6 +46,48 @@ class _SignUpViewState extends State<SignUpView> {
           child: SingleChildScrollView(
             child: Column(
               children: [
+                TextFormField(
+                  controller: userController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: userFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'User Name',
+                    hintText: 'User Name',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(
+                        context, userFocusNode, firstFocusNode);
+                  },
+                ),
+                TextFormField(
+                  controller: firstController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: firstFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'First Name',
+                    hintText: 'Frist Name',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(
+                        context, firstFocusNode, lastFocusNode);
+                  },
+                ),
+                TextFormField(
+                  controller: lastController,
+                  keyboardType: TextInputType.emailAddress,
+                  focusNode: lastFocusNode,
+                  decoration: const InputDecoration(
+                    labelText: 'Last Name',
+                    hintText: 'Last Name',
+                    prefixIcon: Icon(Icons.person),
+                  ),
+                  onFieldSubmitted: (value) {
+                    Utils.fieldFocusChange(
+                        context, lastFocusNode, emailFocusNode);
+                  },
+                ),
                 TextFormField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -51,7 +102,6 @@ class _SignUpViewState extends State<SignUpView> {
                         context, emailFocusNode, passwordFocusNode);
                   },
                 ),
-                20.height,
                 ValueListenableBuilder(
                   valueListenable: securepass,
                   builder: (context, value, child) {
@@ -90,6 +140,9 @@ class _SignUpViewState extends State<SignUpView> {
                       Map data = {
                         "email": emailController.text.trim(),
                         "password": passwordController.text.trim(),
+                        "userName": userController.text,
+                        "firstName": firstController.text,
+                        "lastName": lastController.text,
                       };
                       authviewModel.signupApi(data, context);
                     }
